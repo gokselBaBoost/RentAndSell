@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RentAndSell.Car.API.Commons.Enums;
@@ -7,6 +8,7 @@ using RentAndSell.Car.API.Data.Entities.Concrete;
 
 namespace RentAndSell.Car.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CarsController : ControllerBase
@@ -36,24 +38,9 @@ namespace RentAndSell.Car.API.Controllers
         public ActionResult Post(Araba car)
         {
             _dbContext.Arabalar.Add(car);
-            
-            //ArabaTarihce arabaTarihce = new ArabaTarihce();
-            //arabaTarihce.Marka = car.Marka;
-            //arabaTarihce.Model = car.Model;
-            //arabaTarihce.Yili = car.Yili;
-            //arabaTarihce.YakitTuru = car.YakitTuru;
-            //arabaTarihce.SanzimanTipi = car.SanzimanTipi;
-            //arabaTarihce.MotorTipi = car.MotorTipi;
-            //arabaTarihce.IsActive = car.IsActive;
-            //arabaTarihce.IsDeleted = car.IsDeleted;
-            //arabaTarihce.IslemTipi = IslemTipi.Inserted;
-            //arabaTarihce.IslemZamani = DateTime.Now;
-
-            //_dbContext.ArabaTarihcesi.Add(arabaTarihce);
-
             _dbContext.SaveChanges();
 
-            return Created();
+            return Ok($"Kayıt Başıryla yapıldı. Kayıt No : {car.Id}");
         }
 
         [HttpPut("{id}")]
@@ -77,20 +64,6 @@ namespace RentAndSell.Car.API.Controllers
                 readAraba.YakitTuru = car.YakitTuru;
                 readAraba.Updated = DateTime.Now;
 
-                //ArabaTarihce arabaTarihce = new ArabaTarihce();
-                //arabaTarihce.Marka = car.Marka;
-                //arabaTarihce.Model = car.Model;
-                //arabaTarihce.Yili = car.Yili;
-                //arabaTarihce.YakitTuru = car.YakitTuru;
-                //arabaTarihce.SanzimanTipi = car.SanzimanTipi;
-                //arabaTarihce.MotorTipi = car.MotorTipi;
-                //arabaTarihce.IsActive = car.IsActive;
-                //arabaTarihce.IsDeleted = car.IsDeleted;
-                //arabaTarihce.IslemTipi = IslemTipi.Updated;
-                //arabaTarihce.IslemZamani = DateTime.Now;
-
-                //_dbContext.ArabaTarihcesi.Add(arabaTarihce);
-
                 //_dbContext.Arabalar.Update(readAraba);
                 _dbContext.SaveChanges();
                 return NoContent();
@@ -110,22 +83,6 @@ namespace RentAndSell.Car.API.Controllers
             if (readAraba != null)
             {
                 _dbContext.Arabalar.Remove(readAraba);
-
-
-                //ArabaTarihce arabaTarihce = new ArabaTarihce();
-                //arabaTarihce.Marka = readAraba.Marka;
-                //arabaTarihce.Model = readAraba.Model;
-                //arabaTarihce.Yili = readAraba.Yili;
-                //arabaTarihce.YakitTuru = readAraba.YakitTuru;
-                //arabaTarihce.SanzimanTipi = readAraba.SanzimanTipi;
-                //arabaTarihce.MotorTipi = readAraba.MotorTipi;
-                //arabaTarihce.IsActive = readAraba.IsActive;
-                //arabaTarihce.IsDeleted = readAraba.IsDeleted;
-                //arabaTarihce.IslemTipi = IslemTipi.Deleted;
-                //arabaTarihce.IslemZamani = DateTime.Now;
-
-                //_dbContext.ArabaTarihcesi.Add(arabaTarihce);
-
                 _dbContext.SaveChanges();
                 return NoContent();
             }
