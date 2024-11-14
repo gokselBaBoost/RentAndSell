@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RentAndSell.Car.API;
 using RentAndSell.Car.API.Data;
+using RentAndSell.Car.API.Data.Entities.Concrete;
 using RentAndSell.Car.API.Services;
 using System.Text;
 using HttpMethod = Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMethod;
@@ -9,20 +11,47 @@ using HttpMethod = Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpMe
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthentication("YetkiKontrol").AddScheme<AuthenticationSchemeOptions, YetkiKontrolYaklayicisi>("YetkiKontrol", null);
-
 builder.Services.AddDbContext<CarRentDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("CarRentDbCon"));
 });
 
+builder.Services.AddIdentity<Kullanici, IdentityRole>()
+                .AddEntityFrameworkStores<CarRentDbContext>()
+                .AddDefaultTokenProviders();
+
+#region Basic Authentication Kodları
+//builder.Services.AddAuthentication("BasicAuthentication")
+//                .AddScheme<AuthenticationSchemeOptions, YetkiKontrolYakalayicisi>("BasicAuthentication", null)
+//                .AddCookie(opt =>
+//                {
+//                    opt.Events.OnRedirectToLogin = (context) =>
+//                    {
+//                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+//                        return Task.CompletedTask;
+//                    };
+
+//                    opt.Events.OnRedirectToAccessDenied = (context) =>
+//                    {
+//                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+//                        return Task.CompletedTask;
+//                    };
+//                }); 
+#endregion
+
+
+
 builder.Services.AddControllers();
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

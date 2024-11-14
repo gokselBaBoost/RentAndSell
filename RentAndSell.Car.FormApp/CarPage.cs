@@ -1,20 +1,22 @@
 using RentAndSell.Car.FormApp.Commons.Enums;
 using RentAndSell.Car.FormApp.Models;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reflection;
 
 namespace RentAndSell.Car.FormApp
 {
-    public partial class Form1 : Form
+    public partial class CarPage : Form
     {
         private HttpClient _httpClient;
         private const string _endPoint = "Cars";
 
-        public Form1()
+        public CarPage()
         {
             InitializeComponent();
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new Uri("https://localhost:7104/api/");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", Program.BasicAuth);
         }
 
         private void Form1_Load(object sender, EventArgs e)
