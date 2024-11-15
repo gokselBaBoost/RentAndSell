@@ -1,6 +1,6 @@
 ﻿namespace RentAndSell.Car.FormApp
 {
-    partial class Form1
+    partial class CarPage
     {
         /// <summary>
         ///  Required designer variable.
@@ -30,6 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             groupBox1 = new GroupBox();
+            btnRead = new Button();
+            txtCarId = new TextBox();
             txtId = new TextBox();
             btnDelete = new Button();
             btnUpdate = new Button();
@@ -51,8 +53,6 @@
             sanzimanTipiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             yiliDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             arabaViewModelBindingSource = new BindingSource(components);
-            txtCarId = new TextBox();
-            btnRead = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nbrUpDownYil).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvArabaList).BeginInit();
@@ -79,6 +79,24 @@
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "YENİ KAYIT";
+            // 
+            // btnRead
+            // 
+            btnRead.Location = new Point(118, 260);
+            btnRead.Name = "btnRead";
+            btnRead.Size = new Size(75, 23);
+            btnRead.TabIndex = 8;
+            btnRead.Text = "OKU";
+            btnRead.UseVisualStyleBackColor = true;
+            btnRead.Click += btnRead_Click;
+            // 
+            // txtCarId
+            // 
+            txtCarId.Location = new Point(8, 260);
+            txtCarId.Name = "txtCarId";
+            txtCarId.PlaceholderText = "Car ID";
+            txtCarId.Size = new Size(100, 23);
+            txtCarId.TabIndex = 8;
             // 
             // txtId
             // 
@@ -261,24 +279,6 @@
             // arabaViewModelBindingSource
             // 
             arabaViewModelBindingSource.DataSource = typeof(Models.ArabaViewModel);
-            // 
-            // txtCarId
-            // 
-            txtCarId.Location = new Point(8, 260);
-            txtCarId.Name = "txtCarId";
-            txtCarId.PlaceholderText = "Car ID";
-            txtCarId.Size = new Size(100, 23);
-            txtCarId.TabIndex = 8;
-            // 
-            // btnRead
-            // 
-            btnRead.Location = new Point(118, 260);
-            btnRead.Name = "btnRead";
-            btnRead.Size = new Size(75, 23);
-            btnRead.TabIndex = 8;
-            btnRead.Text = "OKU";
-            btnRead.UseVisualStyleBackColor = true;
-            btnRead.Click += btnRead_Click;
             // 
             // Form1
             // 
