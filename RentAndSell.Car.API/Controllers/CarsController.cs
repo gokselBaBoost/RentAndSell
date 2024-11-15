@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using RentAndSell.Car.API.Data.Entities.Concrete;
 
 namespace RentAndSell.Car.API.Controllers
 {
-    //[Authorize(AuthenticationSchemes = "BasicAuthentication")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CarsController : ControllerBase
@@ -35,7 +36,7 @@ namespace RentAndSell.Car.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(Araba car)
+        public ActionResult Post([FromBody] Araba car)
         {
             _dbContext.Arabalar.Add(car);
             _dbContext.SaveChanges();

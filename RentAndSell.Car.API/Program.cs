@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using RentAndSell.Car.API;
 using RentAndSell.Car.API.Data;
 using RentAndSell.Car.API.Data.Entities.Concrete;
@@ -20,6 +23,7 @@ builder.Services.AddIdentity<Kullanici, IdentityRole>()
                 .AddEntityFrameworkStores<CarRentDbContext>()
                 .AddDefaultTokenProviders();
 
+
 #region Basic Authentication Kodları
 //builder.Services.AddAuthentication("BasicAuthentication")
 //                .AddScheme<AuthenticationSchemeOptions, YetkiKontrolYakalayicisi>("BasicAuthentication", null)
@@ -36,13 +40,85 @@ builder.Services.AddIdentity<Kullanici, IdentityRole>()
 //                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
 //                        return Task.CompletedTask;
 //                    };
-//                }); 
+//                });
+#endregion
+
+#region JWT Authentication Kodları
+builder.Services.AddAuthentication(opt =>
+                {
+                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = "CarApi",
+                        ValidAudience = "CarWeb",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("gizlikelime-şayet-bu-çok-gizlibirkelime")),
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true
+                    };
+                });
+
+//builder.Services.ConfigureApplicationCookie(opt =>
+//{
+//    opt.Events.OnRedirectToLogin = (context) =>
+//    {
+//        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+//        return Task.CompletedTask;
+//    };
+
+//    opt.Events.OnRedirectToAccessDenied = (context) =>
+//    {
+//        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+//        return Task.CompletedTask;
+//    };
+//});
+
 #endregion
 
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddDefaultPolicy(p => {
+        p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    });
+});
 
 builder.Services.AddControllers();
 
+builder.Services.AddSwaggerGen( opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Rent And Sell Car API", Version = "v1" });
+    
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Lütfen token değerinizi giriniz",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[]{}
+        } 
+    });
+});
 
 var app = builder.Build();
 
@@ -52,6 +128,14 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSwagger();
+app.UseSwaggerUI(s =>
+{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger");
+});
+
+app.UseCors();
 
 app.MapControllers();
 

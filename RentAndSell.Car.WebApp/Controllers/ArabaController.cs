@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentAndSell.Car.WebApp.Models;
+using System.Net.Http.Headers;
 
 namespace RentAndSell.Car.WebApp.Controllers
 {
@@ -9,12 +10,20 @@ namespace RentAndSell.Car.WebApp.Controllers
     public class ArabaController : Controller
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private const string _endPoint = "Cars";
+        private readonly string _token;
 
-        public ArabaController(HttpClient httpClient)
+        public ArabaController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClient;
+            _httpContextAccessor = httpContextAccessor;
+
+            _token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+
             _httpClient.BaseAddress = new Uri("https://localhost:7104/api/");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
         }
 
         // GET: ArabaController
@@ -34,13 +43,17 @@ namespace RentAndSell.Car.WebApp.Controllers
         // GET: ArabaController/Create
         public ActionResult Create()
         {
-            return View();
+            ArabaViewModel model = new ArabaViewModel();
+
+            ViewBag.Token = _token;
+
+            return View(model);
         }
 
         // POST: ArabaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(ArabaViewModel model)
         {
             try
             {
